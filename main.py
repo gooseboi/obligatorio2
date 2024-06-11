@@ -6,10 +6,8 @@ import random
 def crear_tablero_minas():
     return [[0 for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
 
-
 def crear_tablero_revelado():
     return [[False for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
-
 
 def plantar_bombas(tablero):
     for _ in range(config.NUM_MINAS):
@@ -28,24 +26,10 @@ def calcular_adyacentes(tablero):
             count = 0
             max_coord = config.LARGO_TABLERO - 1
 
-            if y != 0:
-                if x != 0:
-                    count += (tablero[y-1][x-1] == -1)
-                count += (tablero[y-1][x] == -1)
-                if x != max_coord:
-                    count += (tablero[y-1][x+1] == -1)
-
-            if x != 0:
-                count += (tablero[y][x-1] == -1)
-            if x != max_coord:
-                count += (tablero[y][x+1] == -1)
-
-            if y != max_coord:
-                if x != 0:
-                    count += (tablero[y+1][x-1] == -1)
-                count += (tablero[y+1][x] == -1)
-                if x != max_coord:
-                    count += (tablero[y+1][x+1] == -1)
+            for adj_y in [y-1, y, y+1]:
+                for adj_x in [x-1, x, x+1]:
+                    if 0 <= adj_y <= max_coord and 0 <= adj_x <= max_coord:
+                        count += (tablero[adj_y][adj_x] == -1)
 
             tablero[y][x] = count
 
@@ -56,10 +40,11 @@ def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
         return -1
     else:
         if tablero_minas[fila][columna] == 0:
-            for y in filter(lambda y: (y >= 0 and y <= config.NUM_MINAS - 1), [fila-1,fila,fila+1]):
-                for x in filter(lambda x: (x >= 0 and x <= config.NUM_MINAS - 1), [columna-1,columna,columna+1]):
-                    if tablero_minas[y][x] != -1 and not tablero_revelado[y][x]:
-                        revelar_celdas(y, x, tablero_minas, tablero_revelado)
+            for y in [fila-1,fila,fila+1]:
+                for x in [columna-1,columna,columna+1]:
+                    if 0 <= y <= config.NUM_MINAS - 1 and 0 <= x <= config.NUM_MINAS - 1:
+                        if tablero_minas[y][x] != -1 and not tablero_revelado[y][x]:
+                            revelar_celdas(y, x, tablero_minas, tablero_revelado)
 
         for y in range(len(tablero_revelado)):
             for x in range(len(tablero_revelado[y])):
