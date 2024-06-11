@@ -4,13 +4,30 @@ import config
 import random
 
 def crear_tablero_minas():
+    """
+    Retorna un tablero cuadrado, donde todos los elementos de la matriz son `0`.
+    Las dimensiones del tablero son contraladas por la global `config.LARGO_TABLERO`.
+    """
+    # Generar LARGO_TABLERO listas, cada una con LARGO_TABLERO elementos.
     return [[0 for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
 
 def crear_tablero_revelado():
+    """
+    Retorna un tablero cuadrado, donde todos los elementos de la matriz son `False`.
+    Las dimensiones del tablero son contraladas por la global `config.LARGO_TABLERO`.
+    """
+    # Generar LARGO_TABLERO listas, cada una con LARGO_TABLERO elementos.
     return [[False for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
 
 def plantar_bombas(tablero):
+    """
+    Coloca minas en posiciones aleatorias del tablero proporcionado.
+
+    La cantidad de minas es controlada por la global `config.NUM_MINAS`.
+    """
     for _ in range(config.NUM_MINAS):
+        # Escoger una posición aleatoria, y si no hay una bomba ya ahí, poner una bomba.
+        # Si ya hay una bomba, escoger otra posición aleatoria esta que no la haya.
         pos_x = random.randint(0, config.LARGO_TABLERO-1)
         pos_y = random.randint(0, config.LARGO_TABLERO-1)
         while tablero[pos_x][pos_y] == -1:
@@ -19,6 +36,10 @@ def plantar_bombas(tablero):
         tablero[pos_x][pos_y] = -1
 
 def calcular_adyacentes(tablero):
+    """
+    Calcula la cantidad de minas adyacentes para cada celda no mina del tablero proporcionado, y
+    guarda el resultado del cálculo en el tablero proporcionado.
+    """
     for y in range(len(tablero)):
         for x in range(len(tablero[y])):
             if tablero[y][x] == -1:
@@ -26,8 +47,13 @@ def calcular_adyacentes(tablero):
             count = 0
             max_coord = config.LARGO_TABLERO - 1
 
+            # Las celdas adyacentes están a distancia uno, para arriba o abajo, o derecha o izquierda
             for adj_y in [y-1, y, y+1]:
                 for adj_x in [x-1, x, x+1]:
+                    # Si la celda adyacente está afuera de la matriz, no cuenta
+                    #
+                    # No importa que se cuente a sí mismo, porque si es una
+                    # bomba no llega hasta acá
                     if 0 <= adj_y <= max_coord and 0 <= adj_x <= max_coord:
                         count += (tablero[adj_y][adj_x] == -1)
 
@@ -35,21 +61,48 @@ def calcular_adyacentes(tablero):
 
 
 def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
+    """
+    Revela la celda en posición (columna, fila) del tablero en tablero_revelado.
+
+    Si la celda es una mina, retorna -1, indicando la pérdida del juego.
+    Si la celda es vacía, revela todas las celdas adyacentes. Además, recursa
+    sobre ellas si son también vacías, revelando las adyacentes de estas.
+    Si la celda es un número, simplemente la revela.
+
+    La función retorna -1 en caso de revelar una mina, 0 en caso de que queden
+    celdas no vacías sin revelar, y 1 si todas las celdas sin revelar son minas.
+    """
     tablero_revelado[fila][columna] = True
     if tablero_minas[fila][columna] == -1:
         return -1
     else:
+        # Si se revela una celda vacía, todas sus adyacentes se revelan
         if tablero_minas[fila][columna] == 0:
+            # Las celdas adyacentes están a distancia uno, para arriba o abajo, o derecha o izquierda
             for y in [fila-1,fila,fila+1]:
                 for x in [columna-1,columna,columna+1]:
                     if 0 <= y <= config.NUM_MINAS - 1 and 0 <= x <= config.NUM_MINAS - 1:
-                        if tablero_minas[y][x] != -1 and not tablero_revelado[y][x]:
+                        # Si ya está revelada, es un número o vacía
+                        #
+                        # Si es un número, no es necesario revelar la adyacente
+                        # por las reglas del juego
+                        #
+                        # Si es vacía, significa que el programa ya la reveló,
+                        # o estoy volviendo a la que reveló el usuario, y de
+                        # cualquier manera no es necesario recursar a esta
+                        # ya que ya fueron reveladas sus adyacentes
+                        if not tablero_revelado[y][x]:
                             revelar_celdas(y, x, tablero_minas, tablero_revelado)
 
         for y in range(len(tablero_revelado)):
             for x in range(len(tablero_revelado[y])):
+                # Si existe alguna celda que no esté revelada y no sea
+                # una bomba, significa que faltan celdas por revelar, y todavía
+                # no ganó el usuario
                 if not tablero_revelado[y][x] and tablero_minas[y][x] != -1:
                     return 0
+        # Si se llegó hasta acá, significa que todas las celdas no reveladas
+        # son minas, y por lo tanto ganamos.
         return 1
 
 #======================================
