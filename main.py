@@ -6,26 +6,26 @@ import config
 def crear_tablero_minas():
     # Genera un tablero de tamaño NxN y rellena cada celda con 0.
     # N está declarado en config.py, con el nombre LARGO_TABLERO.
-    # Completar...
+    pass
 
 
 def crear_tablero_revelado():
     # Genera un tablero de tamaño NxN y rellena cada celda con False.
     # N está declarado en config.py, con el nombre LARGO_TABLERO.
-    # Completar...
+    pass
 
 
 def plantar_bombas(tablero):
     # Coloca las bombas en el tablero de forma aleatoria.
     # La cantidad de bombas a colocar está definida en config.py
     # Para colocar una bomba, la celda correspondiente debe ser -1
-    # Completar...
+    pass
 
 
 def calcular_adyacentes(tablero):
     # Para cada celda sin una bomba, calcula cuantas bombas hay en las celdas de alrededor.
     # El resultado se guarda en la misma celda.
-    # Completar...
+    pass
 
 
 def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
@@ -34,7 +34,7 @@ def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
     # Si la celda de tablero_minas es -1, entonces la función devuelve -1.
     # Si la celda estaba vacía (0 u otro número positivo), entonces devuelve 0.
     # Si se revelaron todas las celdas vacías, entonces devuelve 1.
-    # Completar...
+    pass
 
 #======================================
 # A partir de acá no se puede modificar
