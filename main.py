@@ -3,6 +3,7 @@ import pygame
 import render
 import config
 
+
 def crear_tablero_minas():
     """
     Retorna un tablero cuadrado, donde todos los elementos de la matriz son `0`.
@@ -11,6 +12,7 @@ def crear_tablero_minas():
     # Generar LARGO_TABLERO listas, cada una con LARGO_TABLERO elementos.
     return [[0 for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
 
+
 def crear_tablero_revelado():
     """
     Retorna un tablero cuadrado, donde todos los elementos de la matriz son `False`.
@@ -18,6 +20,7 @@ def crear_tablero_revelado():
     """
     # Generar LARGO_TABLERO listas, cada una con LARGO_TABLERO elementos.
     return [[False for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
+
 
 def plantar_bombas(tablero):
     """
@@ -35,6 +38,7 @@ def plantar_bombas(tablero):
             pos_y = random.randint(0, config.LARGO_TABLERO-1)
         tablero[pos_x][pos_y] = -1
 
+
 def calcular_adyacentes(tablero):
     """
     Calcula la cantidad de minas adyacentes para cada celda no mina del tablero proporcionado, y
@@ -44,8 +48,8 @@ def calcular_adyacentes(tablero):
         for x, _ in range(len((tablero[y])):
             if tablero[y][x] == -1:
                 continue
-            count = 0
-            max_coord = config.LARGO_TABLERO - 1
+            count=0
+            max_coord=config.LARGO_TABLERO - 1
 
             # Las celdas adyacentes están a distancia uno, para arriba o abajo,
             # o derecha o izquierda
@@ -58,7 +62,7 @@ def calcular_adyacentes(tablero):
                     if 0 <= adj_y <= max_coord and 0 <= adj_x <= max_coord:
                         count += (tablero[adj_y][adj_x] == -1)
 
-            tablero[y][x] = count
+            tablero[y][x]=count
 
 
 def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
@@ -73,15 +77,15 @@ def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
     La función retorna -1 en caso de revelar una mina, 0 en caso de que queden
     celdas no vacías sin revelar, y 1 si todas las celdas sin revelar son minas.
     """
-    tablero_revelado[fila][columna] = True
+    tablero_revelado[fila][columna]=True
     if tablero_minas[fila][columna] == -1:
         return -1
     # Si se revela una celda vacía, todas sus adyacentes se revelan
     if tablero_minas[fila][columna] == 0:
         # Las celdas adyacentes están a distancia uno, para arriba o abajo,
         # o derecha o izquierda
-        for y in [fila-1,fila,fila+1]:
-            for x in [columna-1,columna,columna+1]:
+        for y in [fila-1, fila, fila+1]:
+            for x in [columna-1, columna, columna+1]:
                 if 0 <= y <= config.NUM_MINAS - 1 and 0 <= x <= config.NUM_MINAS - 1:
                     # Si ya está revelada, es un número o vacía
                     #
