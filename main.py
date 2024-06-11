@@ -1,40 +1,65 @@
 import pygame
 import render
 import config
-
+import random
 
 def crear_tablero_minas():
-    # Genera un tablero de tamaño NxN y rellena cada celda con 0.
-    # N está declarado en config.py, con el nombre LARGO_TABLERO.
-    pass
+    return [[0 for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
 
 
 def crear_tablero_revelado():
-    # Genera un tablero de tamaño NxN y rellena cada celda con False.
-    # N está declarado en config.py, con el nombre LARGO_TABLERO.
-    pass
+    return [[False for _ in range(config.LARGO_TABLERO)] for _ in range(config.LARGO_TABLERO)]
 
 
 def plantar_bombas(tablero):
-    # Coloca las bombas en el tablero de forma aleatoria.
-    # La cantidad de bombas a colocar está definida en config.py
-    # Para colocar una bomba, la celda correspondiente debe ser -1
-    pass
-
+    for _ in range(config.NUM_MINAS):
+        pos_x = random.randint(0, config.LARGO_TABLERO-1)
+        pos_y = random.randint(0, config.LARGO_TABLERO-1)
+        while tablero[pos_x][pos_y] == -1:
+            pos_x = random.randint(0, config.LARGO_TABLERO-1)
+            pos_y = random.randint(0, config.LARGO_TABLERO-1)
+        tablero[pos_x][pos_y] = -1
 
 def calcular_adyacentes(tablero):
-    # Para cada celda sin una bomba, calcula cuantas bombas hay en las celdas de alrededor.
-    # El resultado se guarda en la misma celda.
-    pass
+    for y in range(len(tablero)):
+        for x in range(len(tablero[y])):
+            if tablero[y][x] == -1:
+                continue
+            count = 0
+            max_coord = config.LARGO_TABLERO - 1
+
+            if y != 0:
+                if x != 0:
+                    count += (tablero[y-1][x-1] == -1)
+                count += (tablero[y-1][x] == -1)
+                if x != max_coord:
+                    count += (tablero[y-1][x+1] == -1)
+
+            if x != 0:
+                count += (tablero[y][x-1] == -1)
+            if x != max_coord:
+                count += (tablero[y][x+1] == -1)
+
+            if y != max_coord:
+                if x != 0:
+                    count += (tablero[y+1][x-1] == -1)
+                count += (tablero[y+1][x] == -1)
+                if x != max_coord:
+                    count += (tablero[y+1][x+1] == -1)
+
+            tablero[y][x] = count
 
 
 def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
-    # Recibe una fila y una columna (la celda donde el jugador hizo click) y la "revela", o sea,
-    # cambia la celda correspondiente en tablero_revelado a "True".
-    # Si la celda de tablero_minas es -1, entonces la función devuelve -1.
-    # Si la celda estaba vacía (0 u otro número positivo), entonces devuelve 0.
-    # Si se revelaron todas las celdas vacías, entonces devuelve 1.
-    pass
+    tablero_revelado[fila][columna] = True
+    if tablero_minas[fila][columna] == -1:
+        return -1
+    else:
+        for x in range(len(tablero_revelado)):
+            for y in range(len(tablero_revelado[x])):
+                if tablero_revelado[x][y]:
+                    return 0
+        return 1
 
 #======================================
 # A partir de acá no se puede modificar
