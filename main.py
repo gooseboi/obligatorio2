@@ -55,9 +55,15 @@ def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
     if tablero_minas[fila][columna] == -1:
         return -1
     else:
-        for x in range(len(tablero_revelado)):
-            for y in range(len(tablero_revelado[x])):
-                if tablero_revelado[x][y]:
+        if tablero_minas[fila][columna] == 0:
+            for y in filter(lambda y: (y >= 0 and y <= config.NUM_MINAS - 1), [fila-1,fila,fila+1]):
+                for x in filter(lambda x: (x >= 0 and x <= config.NUM_MINAS - 1), [columna-1,columna,columna+1]):
+                    if tablero_minas[y][x] != -1 and not tablero_revelado[y][x]:
+                        revelar_celdas(y, x, tablero_minas, tablero_revelado)
+
+        for y in range(len(tablero_revelado)):
+            for x in range(len(tablero_revelado[y])):
+                if not tablero_revelado[y][x] and tablero_minas[y][x] != -1:
                     return 0
         return 1
 
