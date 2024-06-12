@@ -44,8 +44,8 @@ def calcular_adyacentes(tablero):
     Calcula la cantidad de minas adyacentes para cada celda no mina del tablero proporcionado, y
     guarda el resultado del cálculo en el tablero proporcionado.
     """
-    for y, _ in range(len((tablero)):
-        for x, _ in range(len((tablero[y])):
+    for y in range(len(tablero)):
+        for x in range(len(tablero[y])):
             if tablero[y][x] == -1:
                 continue
             count=0
