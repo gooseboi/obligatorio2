@@ -94,9 +94,10 @@ def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
     if tablero_minas[fila][columna] == 0:
         # Las celdas adyacentes están a distancia uno, para arriba o abajo,
         # o derecha o izquierda
-        for y in [fila-1, fila, fila+1]:
-            for x in [columna-1, columna, columna+1]:
-                if 0 <= y <= config.NUM_MINAS - 1 and 0 <= x <= config.NUM_MINAS - 1:
+        max_coord = config.LARGO_TABLERO - 1
+        for fila_adyacente in [fila-1, fila, fila+1]:
+            for columna_adyacente in [columna-1, columna, columna+1]:
+                if (0 <= fila_adyacente <= max_coord) and (0 <= columna_adyacente <= max_coord):
                     # Si ya está revelada, es un número o vacía.
                     #
                     # Si es un número, no es necesario revelar los adyacentes
@@ -106,8 +107,8 @@ def revelar_celdas(fila, columna, tablero_minas, tablero_revelado):
                     # o estoy volviendo a la que reveló el usuario, y de
                     # cualquier manera no es necesario recursar a esta
                     # ya que ya fueron reveladas sus adyacentes.
-                    if not tablero_revelado[y][x]:
-                        revelar_celdas(y, x, tablero_minas, tablero_revelado)
+                    if not tablero_revelado[fila_adyacente][columna_adyacente]:
+                        revelar_celdas(fila_adyacente, columna_adyacente, tablero_minas, tablero_revelado)
 
     for y in range(len(tablero_revelado)):
         for x in range(len(tablero_revelado[y])):
