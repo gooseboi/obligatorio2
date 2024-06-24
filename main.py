@@ -38,10 +38,11 @@ def plantar_bombas(tablero):
         # haya una bomba ya colocada.
         pos_x = random.randint(0, config.LARGO_TABLERO-1)
         pos_y = random.randint(0, config.LARGO_TABLERO-1)
-        while tablero[pos_x][pos_y] == -1:
+        while tablero[pos_y][pos_x] == -1:
+            print('colision')
             pos_x = random.randint(0, config.LARGO_TABLERO-1)
             pos_y = random.randint(0, config.LARGO_TABLERO-1)
-        tablero[pos_x][pos_y] = -1
+        tablero[pos_y][pos_x] = -1
 
 
 def calcular_adyacentes(tablero):
